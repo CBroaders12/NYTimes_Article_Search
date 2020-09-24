@@ -1,3 +1,4 @@
+// set baseURL and key for access
 const baseURL = 'https://api.nytimes.com/svc/search/v2/articlesearch.json';
 const key = '6IU77XWIwfaaqb0prYd7UFpQneJ3SYYu';
 let url;
@@ -9,12 +10,12 @@ const endDate = document.querySelector('.end-date');
 const searchForm = document.querySelector('form');
 const submitBtn = document.querySelector('.submit');
 
-//RESULTS NAVIGATION
+// RESULTS NAVIGATION
 const nextBtn = document.querySelector('.next');
 const previousBtn = document.querySelector('.prev');
 const nav = document.querySelector('nav');
 
-//RESULTS SECTION
+// RESULTS SECTION
 const section = document.querySelector('section');
 
 //Hide nav bar before we search for anything
@@ -22,7 +23,7 @@ nav.style.display = 'none';
 
 //Default values for pagination and display
 let pageNumber = 0;
-let displayNav = false;
+//let displayNav = false; // Never used
 
 //Add Event Listeners for search and page shifting
 searchForm.addEventListener('submit', fetchResults);
@@ -33,7 +34,7 @@ previousBtn.addEventListener('click', previousPage);
 function fetchResults(e) {
   e.preventDefault();
   url = `${baseURL}?api-key=${key}&page=${pageNumber}&q=${searchTerm.value}`;
-  console.log('URL:', url);
+  //console.log('URL:', url);
 
   //add optional dates
   if (startDate.value !== '') {
@@ -45,7 +46,7 @@ function fetchResults(e) {
     url += `&end_date=${endDate.value}`
   }
 
-  console.log(url);
+  //console.log(url);
 
   fetch(url)
     .then(result => {
@@ -75,10 +76,11 @@ function displayResults(json) {
       let clearfix = document.createElement('div');
 
       let current = articles[i];
-      console.log('Current:', current);
+      // console.log('Current:', current);
 
       link.href = current.web_url;
       link.textContent = current.headline.main;
+      link.target = "blank";
 
       para.textContent = 'Keywords: ';
 
@@ -93,17 +95,17 @@ function displayResults(json) {
         img.alt = current.headline.main;
       }
 
-      clearfix.setAttribute('class', 'clearfix');
+      // clearfix.setAttribute('class', 'clearfix');
+      clearfix.classList.add('clearfix') //better way to do this because it won't override preexisting class names
 
-      article.appendChild(heading);
       heading.appendChild(link);
+      article.appendChild(heading);
       article.appendChild(img);
       article.appendChild(para);
       article.appendChild(clearfix);
       section.appendChild(article);
     }
   }
-
 
   if (articles.length === 10) {
     if (pageNumber > 0) {
@@ -122,7 +124,7 @@ function displayResults(json) {
 function nextPage(e) {
   pageNumber++;
   fetchResults(e)
-  console.log("Page number:", pageNumber);
+  //console.log("Page number:", pageNumber);
 };
 
 function previousPage(e) {
@@ -132,5 +134,5 @@ function previousPage(e) {
     return;
   }
   fetchResults(e);
-  console.log("Page:", pageNumber);
+  //console.log("Page:", pageNumber);
 };
